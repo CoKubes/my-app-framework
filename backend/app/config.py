@@ -22,5 +22,5 @@ settings = Settings()
 
 # Debug: Print the loaded Redis URL
 print(f"Loaded REDIS_URL: {settings.redis_url}")
-print(f"✅ Loaded AWS_ACCESS_KEY_ID: {settings.aws_access_key_id}")
-print(f"✅ Loaded AWS_REGION: {settings.aws_region}")
+print(f"Loaded AWS_ACCESS_KEY_ID: {settings.aws_access_key_id}")
+print(f"Loaded AWS_REGION: {settings.aws_region}")

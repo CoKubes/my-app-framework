@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from app.models.item import Item
 from app.utils.dynamodb_client import add_item, get_item
 from app.utils.redis_client import set_item, get_item as get_item_cache
+from app.utils.logger import logger
 import json
 from decimal import Decimal
 
@@ -16,6 +17,7 @@ def decimal_to_float(obj):
 @router.post("/items/")
 def create_item(item: Item):
     item_data = item.model_dump()
+    logger.info(f"Received new item: {item_data}")
 
     # Save to DynamoDB
     add_item(item_data)
@@ -23,19 +25,25 @@ def create_item(item: Item):
     # Cache item in Redis
     set_item(f"item:{item.id}", json.dumps(item_data, default=decimal_to_float))
 
+    logger.info(f"Item stored in DynamoDB and cached: {item.id}")
     return item_data
 
 @router.get("/items/{item_id}")
 def read_item(item_id: int):
+    logger.info(f"Fetching item: {item_id}")
+
     # Check Redis Cache
     cached_item = get_item_cache(f"item:{item_id}")
     if cached_item:
+        logger.info(f"Item {item_id} found in cache")
         return json.loads(cached_item)
     
     # If not in cache, check DynamoDB
     item_data = get_item(item_id)
     if item_data:
-        set_item(f"item:{item_id}", json.dumps(item_data, default=decimal_to_float))
+        set_item(f"Item:{item_id}", json.dumps(item_data, default=decimal_to_float))
+        logger.info(f"Item {item_id} fetched from DynamoDB and cached")
         return item_data
     
+    logger.warning(f"Item {item_id} not found")
     return {"error": "Item not found"}
