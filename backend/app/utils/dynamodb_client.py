@@ -54,3 +54,10 @@ def update_item(item_id: int, updated_data: dict):
     )
 
     logger.info(f"Item {item_id} successfully updated in DynamoDB")
+
+def delete_item_from_db(item_id: int):
+    logger.info(f"Removing item {item_id} from DynamoDB")
+
+    table.delete_item(Key={"id": item_id})
+
+    logger.info(f"Item {item_id} removed from DynamoDB")
