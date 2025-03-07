@@ -8,5 +8,12 @@ __pycache__/
 # Environment variables
 .env
 
-# VS Code settings (optional)
+# Ignore aws creds
+.aws/
+
+# Ignore Log files
+logs/
+*.log
+
+# VS Code settings 
 .vscode/
