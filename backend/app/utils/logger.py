@@ -1,8 +1,8 @@
 import logging
 import os
 import watchtower
-import boto3
 from app.config import settings
+
 
 # Ensure logs/ directory exists
 log_directory = "logs"
@@ -34,3 +34,4 @@ logger.addHandler(file_handler)
 logger.addHandler(cloudwatch_handler)
 
 logger.info("Logging setup complete!")
+
