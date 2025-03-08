@@ -10,7 +10,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 app = FastAPI(title=settings.app_name, debug=settings.debug)
 
 # Configure AWS X-Ray
-xray_recorder.configure(service="MyAppTracing", daemon_address="127.0.0.1:2000")
+xray_recorder.configure(service="MyAppTracing", daemon_address="127.0.0.1:2000", sampling=True)
 #patch_all()
 
 # Custom X-Ray Middleware since fastapi isnt natively supported
