@@ -2,6 +2,7 @@ import logging
 import os
 import watchtower
 from app.config import settings
+from aws_xray_sdk.core import xray_recorder
 
 
 # Ensure logs/ directory exists

@@ -6,6 +6,7 @@ from app.utils.logger import logger
 from app.utils.metric import send_cloudwatch_metric
 import json
 from decimal import Decimal
+from aws_xray_sdk.core import xray_recorder
 
 router = APIRouter()
 
@@ -16,7 +17,7 @@ def decimal_to_float(obj):
     raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
 
 @router.post("/items/")
-def create_item(item: Item):
+async def create_item(item: Item):
     send_cloudwatch_metric("TotalRequests")  # Track total API requests
     item_data = item.model_dump()
     logger.info(f"Received new item: {item_data}")
@@ -32,7 +33,7 @@ def create_item(item: Item):
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @router.get("/items/{item_id}")
-def read_item(item_id: int):
+async def read_item(item_id: int):
     send_cloudwatch_metric("TotalRequests")
     logger.info(f"Fetching item: {item_id}")
 
@@ -54,7 +55,7 @@ def read_item(item_id: int):
     raise HTTPException(status_code=404, detail="Item not found")
 
 @router.put("/items/{item_id}")
-def update_existing_item(item_id: int, updated_item: Item):
+async def update_existing_item(item_id: int, updated_item: Item):
     send_cloudwatch_metric("TotalRequests")
     logger.info(f"Updating item: {item_id}")
 
@@ -72,7 +73,7 @@ def update_existing_item(item_id: int, updated_item: Item):
     return {"message": "Item updated successfully", "item": updated_data}
 
 @router.delete("/items/{item_id}")
-def delete_item(item_id: int):
+async def delete_item(item_id: int):
     send_cloudwatch_metric("TotalRequests")
     logger.info(f"Deleting item: {item_id}")
 
