@@ -1,6 +1,6 @@
 import boto3
 from app.config import settings
-from app.utils.logger import logger
+from app.utils.logger import log_event
 
 # Initialize CloudWatch client
 cloudwatch = boto3.client(
@@ -21,6 +21,6 @@ def send_cloudwatch_metric(metric_name: str, value: int = 1, unit: str = "Count"
                 }
             ]
         )
-        logger.info(f"Sent metric {metric_name} with value {value} to CloudWatch.")
+        log_event("info", f"Sent metric {metric_name} with value {value} to CloudWatch.")
     except Exception as e:
-        logger.error(f"Failed to send metric {metric_name}: {e}")
+        log_event("error", f"Failed to send metric {metric_name}: {e}")
