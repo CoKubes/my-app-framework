@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+import boto3
 import watchtower
 from app.config import settings
 from aws_xray_sdk.core import xray_recorder
@@ -12,12 +13,14 @@ log_directory = "logs"
 if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
-# Override all Uvicorn loggers
-for logger_name in ["uvicorn", "uvicorn.error", "uvicorn.access"]:
-    logger = logging.getLogger(logger_name)
-    logger.setLevel(logging.INFO)
-    logger.handlers = []  # Clear default handlers
-    logger.propagate = False  # Stop propagation to root
+# Create boto3 client with region
+cloudwatch_client = boto3.client("logs", region_name=settings.aws_region)
+
+# Set up main logger (just "uvicorn" for now)
+logger = logging.getLogger("uvicorn")
+logger.setLevel(logging.INFO)
+logger.handlers = []  # Clear default handlers
+logger.propagate = False  # Stop propagation to root
 
 # Create a file handler for local logs
 file_handler = logging.FileHandler("logs/app.log")
@@ -28,6 +31,7 @@ file_handler.setLevel(logging.INFO)
 cloudwatch_handler = watchtower.CloudWatchLogHandler(
     log_group=settings.aws_log_group,
     stream_name=settings.aws_log_stream,
+    boto3_client=cloudwatch_client,
 )
 
 # Use JSON Formatter for logs
