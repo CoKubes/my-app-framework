@@ -6,8 +6,18 @@ from aws_xray_sdk.core import xray_recorder, patch_all
 from aws_xray_sdk.core.models.segment import Segment
 from aws_xray_sdk.core.models.subsegment import Subsegment
 from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title=settings.app_name, debug=settings.debug)
+
+# CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configure AWS X-Ray
 xray_recorder.configure(service="MyAppTracing", daemon_address="127.0.0.1:2000", sampling=False)
