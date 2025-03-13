@@ -1,0 +1,19 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+
+# Ignore aws creds
+.aws/
+
+# Ignore Log files
+logs/
+*.log
+
+# VS Code settings 
+.vscode/
